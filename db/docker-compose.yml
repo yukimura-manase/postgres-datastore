@@ -1,0 +1,52 @@
+version: '3'
+services:
+  # Database
+  db:
+    build: postgres
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      PGPASSWORD: password
+      POSTGRES_DB: testdb
+      DATABASE_HOST: localhost
+    networks:
+      - postgres-network
+  # Migration
+  migration:
+    image: node:18
+    volumes:
+      - .:/mnt/pwd
+    working_dir: /mnt/pwd
+    environment:
+      DB_HOST: db
+      DB_NAME: testdb
+      DB_USER: postgres
+      DB_PASS: password
+    entrypoint: sh
+    command: -c 'npm run migrate:latest'
+    depends_on:
+      db:
+        condition: service_started
+    networks:
+      - postgres-network
+  # DB-Doc
+  db_doc_gen:
+    image: k1low/tbls:latest
+    working_dir: /work
+    volumes:
+      - ./:/work
+    restart: on-failure
+    entrypoint: >
+      tbls doc --rm-dist postgres://postgres:password@db:5432/testdb?sslmode=disable doc/db
+    depends_on:
+      db:
+        condition: service_started
+      migration:
+        condition: service_completed_successfully
+    networks:
+      - postgres-network
+networks:
+  postgres-network:
+    name: postgres-network

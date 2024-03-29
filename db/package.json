@@ -1,0 +1,25 @@
+{
+  "name": "db",
+  "version": "1.0.0",
+  "description": "PostgreSQL & Knex & tbls DataStore",
+  "main": "index.js",
+  "author": "Robotama",
+  "license": "ISC",
+  "scripts": {
+    "migrate:make": "knex migrate:make migration -x ts",
+    "migrate:latest": "knex migrate:latest",
+    "migrate:up": "knex migrate:up",
+    "migrate:down": "knex migrate:down"
+  },
+  "dependencies": {
+    "@trivago/prettier-plugin-sort-imports": "^4.1.1",
+    "@types/node": "^18.16.1",
+    "dotenv": "^16.0.3",
+    "knex": "^2.4.2",
+    "pg": "^8.10.0",
+    "prettier": "^2.8.8",
+    "ts-node": "^10.9.1",
+    "tsc": "^2.0.4",
+    "typescript": "^5.0.4"
+  }
+}
